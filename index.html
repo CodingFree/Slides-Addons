@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js - The HTML Presentation Framework</title>
+		<title data-l10n-id="slides-title"></title>
 
 		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
 		<meta name="author" content="Hakim El Hattab">
@@ -32,6 +32,8 @@
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
 		<![endif]-->
+		<link rel="prefetch" type="application/l10n" href="data/locales.ini" />
+    <script type="text/javascript" src="js/l10n.js" defer></script>
 	</head>
 
 	<body>
@@ -406,6 +408,5 @@ Reveal.addEventListener( 'customevent', function() {
 			});
 
 		</script>
-
 	</body>
 </html>
