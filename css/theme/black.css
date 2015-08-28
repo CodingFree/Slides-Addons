@@ -44,13 +44,19 @@ body {
   word-wrap: break-word; }
 
 .reveal h1 {
-  font-size: 2.5em; }
+  font-size: 2.0em; }
+
+.reveal h1#firstSlide {
+  font-size: 1.5em; }
 
 .reveal h2 {
   font-size: 1.6em; }
 
 .reveal h3 {
   font-size: 1.3em; }
+
+.reveal h3#firstSlide {
+  font-size: 1.0em; }
 
 .reveal h4 {
   font-size: 1em; }
