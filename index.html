@@ -76,12 +76,26 @@
 						<h2 data-l10n-id="title-addons-2">But what are addons?</h2>
 						<p data-l10n-id="p1-addons-2">Add-ons are app packages composed of JavaScript, CSS, and other assets.</p>
 						<p data-l10n-id="p2-addons-2">A single Firefox OS add-on can extend just one app, several, or all of them.</p>
+						<p data-l10n-id="p3-addons-2" class="fragment">Lets build our first addon!</p>
 					</section>
 				</section>
 
 				<section>
-					<h2>IMGUR Addon</h2>
-					<pre><code data-trim contenteditable>
+					<section>
+						<h2 data-l10n-id="title-imgur">Our first addon</h2>
+						<p data-l10n-id="p2-imgur">This addon will take any screnshot taken with out device and will upload it to IMGUR.</p>
+						<p data-l10n-id="p1-imgur">It will be attached to the system app: <b>system.gaiamobile.org</b></p>
+						<p data-l10n-id="p3-imgur" class="fragment">That means that it will inherit the permissions of the target app: since system.gaiamobile.org is <b>certified</b>, the addon will inherit the same permissions.</p>
+					</section>
+					<section>
+						<h2 data-l10n-id="title-imgur-2">IMGUR Addon</h2>
+						<p data-l10n-id="p1-imgur">It must have a manifest file.</p>
+						<p data-l10n-id="p1-imgur">It will be a Chrome manifest, quite different from the manifests used for Firefox OS Webapps.</p>
+						<p class="fragment">Manifest File Format: <a target="_blank" href="https://developer.chrome.com/extensions/manifest">Field summary</a>.</p>
+					</section>
+					<section>
+						<h2 data-l10n-id="title-imgur-2">IMGUR Addon</h2>
+						<pre><code data-trim contenteditable>
 {
   "manifest_version": 2,
   "version": "2.0",
@@ -106,10 +120,191 @@
     "16": "/style/icons/16.png"
   }
 }
-					</code></pre>
-					<p>Manifest File Format: <a target="_blank" href="https://developer.chrome.com/extensions/manifest">Field summary</a>.</p>
+						</code></pre>
+						<small>
+							<p data-l10n-id="p1-imgur-2">The "matches" field is what is used to attach the addon to any app.</p>
+							<p data-l10n-id="p2-imgur-2">It uses origin + entry point (index.html)</p>
+							<p data-l10n-id="p3-imgur-2">The js and css fields are the assets attached to the target.</p>
+						</small>
+					</section>
+					<section>
+						<p>IMGUR Addon</p>
+						<img src="img/zipFile.png">
+						<p data-l10n-id="p1-imgur-3">This manifest.json will be inside the package.</p>
+					</section>
 				</section>
+				<section>
+					<section>
+						<h2 data-l10n-id="title-update">But we want to publish it!</h2>
+						<p data-l10n-id="p1-update">If we want any user to be able to install it we need another manifest.</p>
+						<p data-l10n-id="p2-update">It will be "update.webapp" and it will be hosted in our Web Hosting. That will let the Hackerplace to find it.</p>
+						<small data-l10n-id="p3-update" class="fragment">Pro tip: It has its own Content-Type, so check <a href="https://developer.mozilla.org/en-US/Apps/Build/Manifest#Serving_manifests">these for steps your hosting.</a></small>
+					</section>
+					<section>
+						<h2 data-l10n-id="title-update-2">So it will look like...</h2>
+						<img src="img/ftp.png">
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2 data-l10n-id="title-code">Injecting the code</h2>
+						<p data-l10n-id="p1-code">In the content_script field, we specified our script:</p>
+						<p data-l10n-id="p2-code">"js": ["imgur.js"]</p>
+						<p data-l10n-id="p3-code">We are attaching that script to a Web App that whose url matches a regular expresion.</p>
+						<p data-l10n-id="p3-code">We are matching a local app, app://system.gaiamobile.org/index.html, but it could be even a Website, like ["http://www.mozilla.com/*"].</p>
+						<p><small data-l10n-id="p4-code" class="fragment">Pro tip: <a href="https://developer.chrome.com/extensions/content_scripts#match-patterns-globs">match patterns.</a></small></p>
+					</section>
+					<section>
+						<h2 data-l10n-id="title-code-2">The window object</h2>
+						<p data-l10n-id="p1-code-2">Add-ons only share a <b>proxied version</b> of the content window.</p>
+						<p data-l10n-id="p2-code-2">As a result, anything that is written to the window object from an add-on is unavailable to the app code.</p>
+						<p data-l10n-id="p3-code-2">However, anything on the window object that is set by app code is available to add-ons. Similarly, the DOM is accessible as usual.</p>
+					</section>
+					<section>
+						<h2 data-l10n-id="title-code-2">Considerations about the window object</h2>
+						<p data-l10n-id="p1-code-2">When an app is already running and an add-on that targets it is enabled. in such a case, a window.onload handler won't work.</p>
+						<p data-l10n-id="p2-code-2">As a result, anything that is written to the window object from an add-on is unavailable to the app code.</p>
+						<p data-l10n-id="p3-code-2">However, anything on the window object that is set by app code is available to add-ons. Similarly, the DOM is accessible as usual.</p>
+					</section>
+					<section>
+						<h2 data-l10n-id="title-code-3">Preventing multiple injections</h2>
+						<p data-l10n-id="p1-code-3">To prevent an add-on from being injected into a single app instance multiple times, you should check whether your add-on is already present.</p>
+						<p data-l10n-id="p2-code-3">I recommend to set a private propery or variable to check whenever it has been loaded.</p>
+						<p data-l10n-id="p3-code-3">I usually do it in a constructor.</p>
+					</section>
+					<section>
+						<h2 data-l10n-id="title-code-4">Example</h2>
+						<pre><code data-trim contenteditable>
+(function () {
 
+    function uploader() {
+        console.log("Object created!");
+        this._started = false;
+        uploader.prototype.start();
+
+    }
+    uploader.prototype = {
+        /**
+         * Start to handle screenshot events.
+         * @memberof Screenshot.prototype
+         */
+        start: function () {
+            console.log("IMGUR Running");
+            if (this._started) {
+                throw 'Instance should not be start()\'ed twice.';
+            }
+            this._started = true;
+
+            window.addEventListener('mozChromeEvent', this);
+        },
+
+        /**
+         * Stop handling screenshot events.
+         * @memberof Screenshot.prototype
+         */
+        stop: function () {
+            if (!this._started) {
+                throw 'Instance was never start()\'ed but stop() is called.';
+            }
+            this._started = false;
+
+            window.removeEventListener('mozChromeEvent', this.handleEvent);
+        },
+
+        /**
+         * Handle screenshot events.
+         * @param  {DOMEvent} evt DOM Event to handle.
+         * @memberof Screenshot.prototype
+         */
+        handleEvent: function (evt) {
+            switch (evt.type) {
+                case 'mozChromeEvent':
+                    if (evt.detail.type === 'take-screenshot-success') {
+                        console.log("There is an screenshot available.");
+                        if(navigator.onLine){
+                            this.handleTakeScreenshotSuccess(evt.detail.file);
+                        }
+                    } else if (evt.detail.type === 'take-screenshot-error') {
+                        this.notify('screenshotFailed', evt.detail.error);
+                    }
+                    break;
+
+                default:
+                    console.debug('Unhandled event: ' + evt.type);
+                    break;
+            }
+        },
+        /**
+         * Handle the take-screenshot-success mozChromeEvent.
+         * @param  {Blob} file Blob object received from the event.
+         * @memberof Screenshot.prototype
+         */
+        handleTakeScreenshotSuccess: function (file) {
+            try {
+                var self = this;
+                var fd = new FormData();
+                fd.append("image", file);
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://api.imgur.com/3/image');
+                xhr.setRequestHeader('Authorization', 'Client-ID 440d44a2a741339');
+                xhr.onload = function() {
+                  var data = JSON.parse(xhr.responseText).data; 
+                  var imgurURL = data.link; 
+                  console.log(imgurURL);
+                    self.notify('Screenshot uploaded: ', imgurURL, null, true);
+                    //const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].getService(Components.interfaces.nsIClipboardHelper);
+                    //gClipboardHelper.copyString(imgurURL);
+                };
+                xhr.send(fd);
+            } catch (e) {
+                console.log('exception in screenshot handler', e);
+                this.notify('screenshotFailed', e.toString());
+            }
+
+        },
+        /**
+         * Display a screenshot success or failure notification.
+         * Localize the first argument, and localize the third if the second is null
+         * @param  {String} titleid  l10n ID of the string to show.
+         * @param  {String} body     Label to show as body, or null.
+         * @param  {String} bodyid   l10n ID of the label to show as body.
+         * @param  {String} onClick  Optional handler if the notification is clicked
+         * @memberof Screenshot.prototype
+         */
+        //TODO: l10n
+        notify: function (titleid, body, bodyid, onClick) {
+            console.log("A notification would be send: " + titleid);
+            var notification = new window.Notification(titleid, {
+                body: body,
+                icon: '/style/icons/Gallery.png'
+            });
+
+            notification.onclick = function () {
+                notification.close();
+                if (onClick) {
+                    new MozActivity({
+                      name: "view",
+                      data: {
+                        type: "url", 
+                        url: body
+                      }
+                    });
+                }
+            };
+        }
+    };
+
+    console.log("Lets start!");
+    var uploader = new uploader();
+}());
+
+						</code></pre>
+				</section>
+			</section>
+				<section>
+					<h2 data-l10n-id="title-workers">Web Workers</h2>
+					<p>TODO</p>
+				</section>
 			</div>
 
 		</div>
